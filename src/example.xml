@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changeList>
+
+<changeSet>
+<id>1</id>
+<author>dubovik</author>
+<requirenment>production</requirenment>
+<script>CREATE TABLE USERS (ID SERIAL, LOGIN CHARACTER VARYING UNIQUE NOT NULL, PASSWORD CHARACTER VARYING NOT NULL, EMAIL CHARACTER VARYING NOT NULL, PHONE CHARACTER VARYING NOT NULL, HASADMINPERMISSION BOOLEAN NOT NULL DEFAULT FALSE, PRIMARY KEY(ID));</script>
+</changeSet>
+
+<changeSet>
+<id>2</id>
+<requirenment>production</requirenment>
+<author>dubovik</author>
+<script>CREATE TABLE PICTURES (ID SERIAL, LOCATION CHARACTER VARYING NOT NULL, PRIMARY KEY(ID));</script>
+</changeSet>
+
+<changeSet>
+<id>3</id>
+<author>dubovik</author>
+<requirenment>production</requirenment>
+<script>CREATE TABLE CLUBS (ID SERIAL, NAME CHARACTER VARYING NOT NULL UNIQUE, SMALLLOGO BIGINT REFERENCES PICTURES (ID), BIGLOGO BIGINT REFERENCES PICTURES (ID), BASECITY CHARACTER VARYING, ADMIN BIGINT NOT NULL REFERENCES USERS (ID), PRIMARY KEY (ID));</script>
+</changeSet>
+
+<changeSet>
+<id>4</id>
+<author>dubovik</author>
+<requirenment>production</requirenment>
+<script>CREATE TABLE RUNNERS (ID SERIAL, ASSOTIATEDUSER BIGINT NOT NULL UNIQUE REFERENCES USERS (ID), FIRSTNAME CHARACTER VARYING NOT NULL, LASTNAME CHARACTER VARYING NOT NULL, AVATAR BIGINT REFERENCES PICTURES (ID), LOGO BIGINT REFERENCES PICTURES (ID), GENDER CHARACTER VARYING (1) NOT NULL, DATEOFBIRTH DATE NOT NULL, CITY CHARACTER VARYING, CLUB BIGINT REFERENCES CLUBS (ID), PRIMARY KEY (ID));</script>
+</changeSet>
+
+<changeSet>
+<id>5</id>
+<author>dubovik</author>
+<requirenment>production</requirenment>
+<script>CREATE TABLE PARKS (ID SERIAL, NAME CHARACTER VARYING NOT NULL UNIQUE, PRIMARY KEY (ID));</script>
+</changeSet>
+
+<changeSet>
+<id>6</id>
+<author>dubovik</author>
+<requirenment>production</requirenment>
+<script>CREATE TABLE RACES (ID SERIAL, DATE DATE NOT NULL, PARK BIGINT REFERENCES PARKS(ID), PRIMARY KEY (ID));</script>
+</changeSet>
+
+<changeSet>
+<id>7</id>
+<author>dubovik</author>
+<requirenment>production</requirenment>
+<script>CREATE TABLE RESULTS (ID SERIAL, RACE BIGINT NOT NULL REFERENCES RACES (ID), POSITION SMALLINT NOT NULL, RUNNER BIGINT REFERENCES RUNNERS (ID), GENDER CHARACTER VARYING (1) NOT NULL, CLUB BIGINT REFERENCES CLUBS (ID), TIME INTEGER NOT NULL, PRIMARY KEY (ID));</script>
+</changeSet>
+
+<changeSet>
+<id>8</id>
+<author>dubovik</author>
+<requirenment>production</requirenment>
+<script>CREATE SEQUENCE HIBERNATE_SEQUENCE;</script>
+</changeSet>
+</changeList> 
