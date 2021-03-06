@@ -30,14 +30,7 @@ public class XMLUtils {
 		try {
 			builder = factory.newDocumentBuilder();
 			Document document = builder.parse(stream);
-			document.getDocumentElement().normalize();
-			NodeList nodeList = document.getElementsByTagName(CHANGESET);
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				ChangeSet ch = getChangeSet(nodeList.item(i));
-				if (ch != null){
-					Logger.log("read chaangeSet: "+ch.toString());
-					chList.add(ch);}
-			}
+			readChangeSets(document, chList);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -53,14 +46,7 @@ public class XMLUtils {
 		try {
 			builder = factory.newDocumentBuilder();
 			Document document = builder.parse(source);
-			document.getDocumentElement().normalize();
-			NodeList nodeList = document.getElementsByTagName(CHANGESET);
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				ChangeSet ch = getChangeSet(nodeList.item(i));
-				if (ch != null){
-					Logger.log("read chaangeSet: "+ch.toString());
-					chList.add(ch);}
-			}
+			readChangeSets(document, chList);
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
@@ -68,6 +54,16 @@ public class XMLUtils {
 		return chList;
 	}
 
+	private static void readChangeSets(Document document,List<ChangeSet> chList) throws Exception{
+		document.getDocumentElement().normalize();
+		NodeList nodeList = document.getElementsByTagName(CHANGESET);
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			ChangeSet ch = getChangeSet(nodeList.item(i));
+			if (ch != null){
+				Logger.log("read chaangeSet: "+ch.toString());
+				chList.add(ch);}
+		}
+	}
 	private static ChangeSet getChangeSet(Node node) {
 		if (node.getNodeType() == Node.ELEMENT_NODE) {
 			Element element = (Element) node;

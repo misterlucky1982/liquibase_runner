@@ -2,6 +2,7 @@ package by.misterlucky.liquibase;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ public class LiquibaseRunner {
 	
 	
 	private List<File> fileList = new ArrayList<>();
+	private List<InputStream> resourceInputStreams = new ArrayList<>();
 	private JDBCConnector connector = new JDBCConnector();
 	private Set<ChangeSet>executedScripts;
 	private Set<String>executionRequirenments = new HashSet<>();
@@ -49,6 +51,10 @@ public class LiquibaseRunner {
 		this.fileList.add(new File(path));
 	}
 	
+	public void applyResourseStream(InputStream stream) {
+		this.resourceInputStreams.add(stream);
+	}
+	
 	public void init() {
 		if (connector.getDriver() == null)
 			connector.setDriver(LiquibaseDefaultVariables.POSTGRES_DRIVER);
@@ -57,6 +63,13 @@ public class LiquibaseRunner {
 		this.fileList.forEach(file -> {
 			try {
 				changeSetList.addAll(XMLUtils.changeSets(file));
+			} catch (ParserConfigurationException | SAXException | IOException e) {
+				throw new LiquibaseException(e);
+			}
+		});
+		this.resourceInputStreams.forEach(stream -> {
+			try {
+				changeSetList.addAll(XMLUtils.changeSets(stream));
 			} catch (ParserConfigurationException | SAXException | IOException e) {
 				throw new LiquibaseException(e);
 			}
