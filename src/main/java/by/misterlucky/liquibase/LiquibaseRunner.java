@@ -3,6 +3,7 @@ package by.misterlucky.liquibase;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +15,7 @@ import org.xml.sax.SAXException;
 public class LiquibaseRunner {
 	
 	
-	private File file;
+	private List<File> fileList = new ArrayList<>();
 	private JDBCConnector connector = new JDBCConnector();
 	private Set<ChangeSet>executedScripts;
 	private Set<String>executionRequirenments = new HashSet<>();
@@ -40,19 +41,26 @@ public class LiquibaseRunner {
 		this.connector.setPassword(password);
 	}
 	
-	public void applyFile(String path){
-		this.file = new File(path);
+	public void applyFile(File file) {
+		this.fileList.add(file);
 	}
 	
-	public void init(){
-		if(connector.getDriver()==null)connector.setDriver(LiquibaseDefaultVariables.POSTGRES_DRIVER);
+	public void applyFile(String path){
+		this.fileList.add(new File(path));
+	}
+	
+	public void init() {
+		if (connector.getDriver() == null)
+			connector.setDriver(LiquibaseDefaultVariables.POSTGRES_DRIVER);
 		this.connector.init();
 		this.executedScripts = this.connector.fetchExecutedChangeSets();
-		try {
-			this.changeSetList = XMLUtils.changeSets(file);
-		} catch (ParserConfigurationException | SAXException | IOException e) {
-			throw new LiquibaseException(e);
-		}
+		this.fileList.forEach(file -> {
+			try {
+				changeSetList.addAll(XMLUtils.changeSets(file));
+			} catch (ParserConfigurationException | SAXException | IOException e) {
+				throw new LiquibaseException(e);
+			}
+		});
 	}
 
 	public void runScripts(){

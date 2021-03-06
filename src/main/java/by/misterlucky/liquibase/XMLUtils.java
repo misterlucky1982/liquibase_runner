@@ -40,7 +40,7 @@ public class XMLUtils {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
-		Logger.log("the size of changeSet list that had been read: "+chList.size());
+		Logger.log("for file "+source.getAbsolutePath()+ " read "+chList.size()+" "+chList.size()+" changeSets");
 		return chList;
 	}
 
