@@ -2,6 +2,7 @@ package by.misterlucky.liquibase;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
@@ -20,6 +21,29 @@ public class XMLUtils {
 	private static final String AUTHOR = "author";
 	private static final String SQLSCRIPT = "script";
 	private static final String REQUIRENMENT_LEVEL = "requirenment";
+
+	protected static List<ChangeSet> changeSets(InputStream stream)
+			throws ParserConfigurationException, SAXException, IOException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder;
+		List<ChangeSet> chList = new ArrayList<>();
+		try {
+			builder = factory.newDocumentBuilder();
+			Document document = builder.parse(stream);
+			document.getDocumentElement().normalize();
+			NodeList nodeList = document.getElementsByTagName(CHANGESET);
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				ChangeSet ch = getChangeSet(nodeList.item(i));
+				if (ch != null){
+					Logger.log("read chaangeSet: "+ch.toString());
+					chList.add(ch);}
+			}
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+		Logger.log("Have been read "+chList.size()+" "+chList.size()+" changeSets");
+		return chList;
+	}
 
 	protected static List<ChangeSet> changeSets(File source)
 			throws ParserConfigurationException, SAXException, IOException {
