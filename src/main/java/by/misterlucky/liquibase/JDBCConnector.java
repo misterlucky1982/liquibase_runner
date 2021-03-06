@@ -93,7 +93,7 @@ public class JDBCConnector {
 	}
 	
 	public String insertScript(ChangeSet chSet){
-		return "INSERT INTO DATABASECHANGELOG (NAME,AUTHOR,DATEEXECUTED,SCRIPT) VALUES ('"+chSet.getName()+"','"+chSet.getAuthor()+"','"+new Date(System.currentTimeMillis()).toString()+"', '"+chSet.getScript()+"');";
+		return "INSERT INTO DATABASECHANGELOG (NAME,AUTHOR,DATEEXECUTED,SCRIPT) VALUES ('"+chSet.getName()+"','"+chSet.getAuthor()+"','"+new Date(System.currentTimeMillis()).toString()+"', '"+chSet.getScript().replaceAll("'", ">")+"');";
 	}
 
 	/**
