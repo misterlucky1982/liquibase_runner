@@ -21,7 +21,7 @@ public class LiquibaseRunner {
 	private JDBCConnector connector = new JDBCConnector();
 	private Set<ChangeSet>executedScripts;
 	private Set<String>executionRequirenments = new HashSet<>();
-	private List<ChangeSet> changeSetList;
+	private List<ChangeSet> changeSetList = new ArrayList<>();
 	
 	public void applyExequtionLevel(String requirenmentLevel){
 		this.executionRequirenments.add(requirenmentLevel);
